@@ -29,7 +29,7 @@ class Particle:
         return self.radial_velocity != 0 or self.angular_velocity != 0
 
     def tick(self, delta_time):
-        if not self.is_moving():
+        if self.radius == schwarzschild_radius:
             self.tick_trail()
             return
 
@@ -64,6 +64,11 @@ class Particle:
         self.tick_trail()
 
     def tick_trail(self):
+        if not self.is_moving():
+            self.trail = self.trail[1:,:]
+            return
+
+        # Add to trail
         position = self.get_position()
         self.trail = np.vstack([self.trail, position])
         if self.trail.shape[0] > self.trail_length:
@@ -105,28 +110,26 @@ class Particle:
     
     particle_size = 1
     particle_color = (0, 0, 0)
-    trail_length = 256
+    trail_length = 128
     trail = np.empty([0, 2])
     frame_counter = 0
     frames_per_trail = 1
-    def draw(self, screen, color):        
+    def draw(self, screen):
         # Draw the trail
+        index = 1
+        (r, g, b) = self.particle_color
         
-        center = 0.5 * np.array([screen.get_width(), screen.get_height()])
-        pygame.draw.circle(screen, color, tuple(self.get_position() + center), 1)
-
-        """
         center = 0.5 * np.array([screen.get_width(), screen.get_height()])
         trail_size = self.trail.shape[0]
         for index in range(trail_size):
             trail_position = self.trail[trail_size - index - 1]
             radius = self.particle_size
-            color = hsv_to_rgb(1 - index / self.trail_length, 1, 1)
+            hue = (1 - index / self.trail_length) % 1
+            color = hsv_to_rgb(hue, 1, 1)
             pygame.draw.circle(screen, color, tuple(trail_position + center), radius)
 
         # Draw the particle
         # pygame.draw.circle(screen, self.particle_color, tuple(position + center), self.particle_size)
-        """
 
 def hsv_to_rgb(h, s, v):
     c = v * s

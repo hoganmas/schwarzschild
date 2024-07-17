@@ -49,45 +49,37 @@ particles = [
 
 # Main loop flag
 running = True
-ms_per_frame = 5
-ticks_per_frame = 1
-time_per_tick = 1
-
-# Clear screen
-screen.fill(white)
-
-# Draw the photon sphere
-pygame.draw.circle(screen, (200, 200, 200), (screen.get_width() / 2, screen.get_height() / 2), schwarzschild_radius * 1.5)
-
-# Draw the Black Hole
-pygame.draw.circle(screen, black, (screen.get_width() / 2, screen.get_height() / 2), schwarzschild_radius)
+ms_per_frame = 10
+ticks_per_frame = 2
+time_per_tick = 2
 
 # Main loop
-time = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     # Clear screen
-    # screen.fill(white)
+    screen.fill(white)
+
+    # Draw the photon sphere
+    pygame.draw.circle(screen, (200, 200, 200), (screen.get_width() / 2, screen.get_height() / 2), schwarzschild_radius * 1.5)
+
+    # Draw the Black Hole
+    pygame.draw.circle(screen, black, (screen.get_width() / 2, screen.get_height() / 2), schwarzschild_radius)
 
     # Draw the particle
-    hue = (time / 1000) % 1
-    color = hsv_to_rgb(hue, 1, 1)
     for particle in particles:
-        if (particle.is_moving()):
-            particle.normalize_speed()
-            for _ in range(ticks_per_frame):
-                particle.tick(time_per_tick)
-        particle.draw(screen, color)
+        particle.normalize_speed()
+        for _ in range(ticks_per_frame):
+            particle.tick(time_per_tick)
+        particle.draw(screen)
 
     # Update the display
     pygame.display.flip()
 
     # Cap the frame rate
     pygame.time.delay(ms_per_frame)
-    time += ms_per_frame
 
 # Quit Pygame
 pygame.quit()
