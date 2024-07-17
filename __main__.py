@@ -35,7 +35,11 @@ particles = [
 """
 
 num_particles = 200
-y_values = np.arange(-screen.get_height() // 2 + 200, screen.get_height() // 2 - 200, 1)
+y_values = np.concatenate((
+    np.arange(schwarzschild_radius, schwarzschild_radius * 2.75, 0.5),
+    np.arange(-schwarzschild_radius, schwarzschild_radius, 1.5),
+    np.arange(-schwarzschild_radius * 2.75, -schwarzschild_radius, 0.5)
+))
 
 particles = [
     create_lightlike(
@@ -50,7 +54,7 @@ particles = [
 # Main loop flag
 running = True
 ms_per_frame = 5
-ticks_per_frame = 1
+ticks_per_frame = 10
 time_per_tick = 1
 
 # Clear screen
@@ -73,21 +77,22 @@ while running:
     # screen.fill(white)
 
     # Draw the particle
-    hue = (time / 1000) % 1
-    color = hsv_to_rgb(hue, 1, 1)
-    for particle in particles:
-        if (particle.is_moving()):
-            particle.normalize_speed()
-            for _ in range(ticks_per_frame):
+    for _ in range(ticks_per_frame):
+        hue = (time / 1000) % 1
+        color = hsv_to_rgb(hue, 1, 1)
+        time += time_per_tick
+
+        for particle in particles:
+            if (particle.is_moving()):
+                particle.normalize_speed()
                 particle.tick(time_per_tick)
-        particle.draw(screen, color)
+                particle.draw(screen, color)
 
     # Update the display
     pygame.display.flip()
 
     # Cap the frame rate
     pygame.time.delay(ms_per_frame)
-    time += ms_per_frame
 
 # Quit Pygame
 pygame.quit()
