@@ -34,6 +34,7 @@ particles = [
 ]
 """
 
+"""
 num_particles = 200
 theta_values = np.arange(-math.pi / 6, math.pi / 6, 0.01)
 
@@ -44,6 +45,28 @@ particles = [
         (255, 0, 0)
     ) for theta in theta_values
 ]
+"""
+
+particles = []
+for y in np.arange(schwarzschild_radius * 1, screen.get_height() // 5, 1):
+    particles += [create_lightlike(
+        [0, y], 
+        [-1, 0],
+        (255, 0, 0)
+    ), create_lightlike(
+        [0, y], 
+        [1, 0],
+        (255, 0, 0)
+    ), create_lightlike(
+        [0, -y], 
+        [1, 0],
+        (255, 0, 0)
+    ), create_lightlike(
+        [0, -y], 
+        [-1, 0],
+        (255, 0, 0)
+    )]
+
 
 # schwarzschild_particle.particle_color = (255, 0, 0)
 
